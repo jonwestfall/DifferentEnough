@@ -53,7 +53,7 @@ export function Landing({ onStart, onLoadExample, examples }: LandingProps) {
 
       <footer className="links">
         <p>
-          Built by Jon Westfall (<A HREF="https://jonwestfall.com/">JonWestfall.Com</A>)
+          Built by Jon Westfall (JonWestfall.Com)
 
         </p>
       </footer>

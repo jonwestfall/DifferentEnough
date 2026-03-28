@@ -5,7 +5,7 @@ export default defineConfig(() => {
   const isCi = process.env.GITHUB_ACTIONS === 'true'
   return {
     plugins: [react()],
-    // This app is hosted at /DifferentEnough/dist on the user site.
-    base: isCi ? '/DifferentEnough/dist/' : '/',
+    base: isCi ? '/DifferentEnough/' : '/',
   }
 })
+

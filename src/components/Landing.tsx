@@ -53,7 +53,8 @@ export function Landing({ onStart, onLoadExample, examples }: LandingProps) {
 
       <footer className="links">
         <p>
-          Links area: add your blog here in <code>src/components/Landing.tsx</code>.
+          Built by Jon Westfall (<A HREF="https://jonwestfall.com/">JonWestfall.Com</A>)
+
         </p>
       </footer>
     </section>

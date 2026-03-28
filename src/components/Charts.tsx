@@ -2,7 +2,9 @@ import type {
   ContingencyInput,
   CorrelationRawInput,
   IndependentRawInput,
+  IndependentSummaryInput,
   PairedRawInput,
+  PairedSummaryInput,
 } from '../types'
 
 function normalize(values: number[], minPx: number, maxPx: number): number[] {
@@ -12,19 +14,41 @@ function normalize(values: number[], minPx: number, maxPx: number): number[] {
   return values.map((v) => minPx + ((v - min) / (max - min)) * (maxPx - minPx))
 }
 
-export function MeanBars({ data }: { data: IndependentRawInput | PairedRawInput | null }) {
+type MeanBarsInput = IndependentRawInput | PairedRawInput | IndependentSummaryInput | PairedSummaryInput
+
+export function MeanBars({ data }: { data: MeanBarsInput | null }) {
   if (!data) return null
-  const means = 'groupA' in data
-    ? [data.groupA.reduce((a, b) => a + b, 0) / data.groupA.length, data.groupB.reduce((a, b) => a + b, 0) / data.groupB.length]
-    : [data.before.reduce((a, b) => a + b, 0) / data.before.length, data.after.reduce((a, b) => a + b, 0) / data.after.length]
-  const labels = 'groupA' in data ? ['Group A', 'Group B'] : ['Before', 'After']
-  const max = Math.max(...means, 1)
+  let means: number[] = []
+  let labels: string[] = []
+
+  if ('groupA' in data) {
+    means = [
+      data.groupA.reduce((a, b) => a + b, 0) / data.groupA.length,
+      data.groupB.reduce((a, b) => a + b, 0) / data.groupB.length,
+    ]
+    labels = ['Group A', 'Group B']
+  } else if ('before' in data) {
+    means = [
+      data.before.reduce((a, b) => a + b, 0) / data.before.length,
+      data.after.reduce((a, b) => a + b, 0) / data.after.length,
+    ]
+    labels = ['Before', 'After']
+  } else if ('mean1' in data) {
+    means = [data.mean1, data.mean2]
+    labels = ['Group A', 'Group B']
+  } else if ('meanDiff' in data) {
+    means = [data.meanDiff]
+    labels = ['Mean diff']
+  }
+
+  if (means.length === 0 || means.some((m) => !Number.isFinite(m))) return null
+  const maxAbs = Math.max(...means.map((m) => Math.abs(m)), 1)
 
   return (
     <div className="mini-chart">
       {means.map((m, i) => (
         <div key={labels[i]} className="bar-block">
-          <div className="bar" style={{ height: `${(m / max) * 120}px` }} />
+          <div className="bar" style={{ height: `${(Math.abs(m) / maxAbs) * 120}px` }} />
           <span>{labels[i]}</span>
           <strong>{m.toFixed(1)}</strong>
         </div>

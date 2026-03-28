@@ -3,7 +3,14 @@ import type { AnalysisResult, AnalysisTest } from '../types'
 import { copyApaToClipboard } from '../logic/apa'
 import { testLabel } from '../logic/recommendation'
 import { HeatTable, MeanBars, Scatter } from './Charts'
-import type { ContingencyInput, CorrelationRawInput, IndependentRawInput, PairedRawInput } from '../types'
+import type {
+  ContingencyInput,
+  CorrelationRawInput,
+  IndependentRawInput,
+  IndependentSummaryInput,
+  PairedRawInput,
+  PairedSummaryInput,
+} from '../types'
 
 interface ResultsProps {
   test: AnalysisTest
@@ -84,7 +91,7 @@ export function Results({ test, result, payload, missingInfo, onSave }: ResultsP
       <article className="panel">
         <h3>Simple visual</h3>
         {(test === 'independent_t' || test === 'paired_t') && (
-          <MeanBars data={payload as IndependentRawInput | PairedRawInput} />
+          <MeanBars data={payload as IndependentRawInput | PairedRawInput | IndependentSummaryInput | PairedSummaryInput} />
         )}
         {test === 'correlation' && <Scatter data={payload as CorrelationRawInput} />}
         {(test === 'chi_independence') && <HeatTable data={payload as ContingencyInput} />}
